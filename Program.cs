@@ -50,7 +50,7 @@ namespace GliderGunBackup
             int gunsDownloaded = 0;
             foreach (string tab in new string[] { "gun", "guntrue" })
             {
-                Console.Write($"Downloading {tab}...");
+                Console.Write($"Downloading costs for '{tab}'...");
                 string tabPath = Path.Combine(repositoryName, tab);
                 if (!Directory.Exists(tabPath))
                     Directory.CreateDirectory(tabPath);
@@ -61,12 +61,14 @@ namespace GliderGunBackup
                     costsS1 = File.ReadAllText(costsPath);
                 string costsS2 = wc.DownloadString(
                     $"{catagolueURL}textcensus/b3s23/synthesis-costs/{tab}");
+                Console.WriteLine(" Done");
                 if (costsS1 == costsS2)
                     continue;
 
                 Dictionary<int, int> costs1 = ParseCosts(costsS1);
                 Dictionary<int, int> costs2 = ParseCosts(costsS2);
 
+                Console.Write($"Downloading patterns from '{tab}'...");
                 foreach (int period in costs2.Keys)
                 {
                     if (!costs1.ContainsKey(period) ||
