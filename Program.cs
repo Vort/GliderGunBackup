@@ -25,6 +25,22 @@ namespace GliderGunBackup
             return costs;
         }
 
+        void ExecuteGitCommand(string command)
+        {
+            const bool showGitOutput = false;
+
+            var psi = new ProcessStartInfo();
+            psi.FileName = "git";
+            psi.Arguments = command;
+            psi.UseShellExecute = false;
+            if (!showGitOutput)
+            {
+                psi.RedirectStandardOutput = true;
+                psi.RedirectStandardError = true;
+            }
+            Process.Start(psi).WaitForExit();
+        }
+
         Program()
         {
             const string branch = "main";
@@ -42,8 +58,8 @@ namespace GliderGunBackup
             {
                 Console.Write($"Initializing repository...");
                 Directory.CreateDirectory(repositoryName);
-                Process.Start("git", $"init {repositoryName} -b {branch}").WaitForExit();
-                Process.Start("git", $"-C {repositoryName} remote add {remote} {repositoryURL}").WaitForExit();
+                ExecuteGitCommand($"init {repositoryName} -b {branch}");
+                ExecuteGitCommand($"-C {repositoryName} remote add {remote} {repositoryURL}");
                 Console.WriteLine(" Done");
             }
             WebClient wc = new WebClient();
@@ -89,9 +105,9 @@ namespace GliderGunBackup
             if (gunsDownloaded != 0)
             {
                 Console.Write($"Updating repository...");
-                Process.Start("git", $"-C {repositoryName} add -A").WaitForExit();
-                Process.Start("git", $"-C {repositoryName} commit -m \"{gunsDownloaded} guns modified\"").WaitForExit();
-                Process.Start("git", $"-C {repositoryName} push {remote} {branch}").WaitForExit();
+                ExecuteGitCommand($"-C {repositoryName} add -A");
+                ExecuteGitCommand($"-C {repositoryName} commit -m \"{gunsDownloaded} guns modified\"");
+                ExecuteGitCommand($"-C {repositoryName} push {remote} {branch}");
                 Console.WriteLine(" Done");
             }
             Console.WriteLine($"Update process finished {DateTime.UtcNow}");
