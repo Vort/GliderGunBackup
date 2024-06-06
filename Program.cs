@@ -106,7 +106,8 @@ namespace GliderGunBackup
             {
                 Console.Write($"Updating repository...");
                 ExecuteGitCommand($"-C {repositoryName} add -A");
-                ExecuteGitCommand($"-C {repositoryName} commit -m \"{gunsDownloaded} guns modified\"");
+                string plural = gunsDownloaded == 1 ? "gun" : "guns";
+                ExecuteGitCommand($"-C {repositoryName} commit -m \"{gunsDownloaded} {plural} modified\"");
                 ExecuteGitCommand($"-C {repositoryName} push {remote} {branch}");
                 Console.WriteLine(" Done");
             }
